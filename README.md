@@ -10,7 +10,7 @@
 ## Installation
 
 ```bash
-npm install --save reely
+npm install --save https://github.com/flamasweb/reely.git
 ```
 
 ## Usage
