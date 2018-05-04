@@ -1,3 +1,4 @@
+// https://github.com/klausfischer/reely
 const reely = (element, opts) => {
   const options = Object.assign({
     imageArray: [],
@@ -24,11 +25,14 @@ const reely = (element, opts) => {
   let timer;
   let touchOnThis = false;
 
+  let pause = false;
+
   const logError = (msg) => {
     console.error(`${errorPrefix} ${msg}`); // eslint-disable-line no-console
   };
 
   const rotate = (xcoord) => {
+    if(pause) return;
     if (xcoord > oldX) {
       // moving right.
       if (lastMove === 'left') {
@@ -60,7 +64,6 @@ const reely = (element, opts) => {
       lastMove = 'right';
     } else if (xcoord < oldX) {
       // moving left.
-
       if (lastMove === 'right') {
         // Fixes glitch when changing directions.
         i -= 1;
@@ -72,19 +75,11 @@ const reely = (element, opts) => {
         } else {
           i = 0;
         }
-      }
-
-      image.setAttribute('src', images[i]);
-
-      if (i <= 0) {
-        if (!options.edgeStop) {
-          i = images.length - 1;
-        } else {
-          i = 0;
-        }
       } else {
         i -= 1;
       }
+
+      image.setAttribute('src', images[i]);
 
       // Record last move direction.
       lastMove = 'left';
@@ -96,7 +91,7 @@ const reely = (element, opts) => {
     // Dispatch slideChange event
     const ev = new CustomEvent('slideChanged', {
       detail: {
-        currentSlide: i,
+        currentSlide: lastMove == 'left' ? i+1 : i,
       },
     });
 
@@ -104,6 +99,7 @@ const reely = (element, opts) => {
   };
 
   const changeLogic = (xcoord, deviceRate) => {
+    if(pause) return;
     if (oldDiff === null) {
       // If this is the first move, set oldDiff to
       // the current x coordinate and call the rotate method
@@ -210,6 +206,7 @@ const reely = (element, opts) => {
   };
 
   const touchIsMoving = () => {
+    
     const deviceRate = mobileRate;
     let xcoord;
 
@@ -270,8 +267,13 @@ const reely = (element, opts) => {
     preload(images);
   };
 
+  const setPause = (action) => {
+    pause = action;
+  };
+
   return {
     init,
+    setPause,
     slideTo,
   };
 };
