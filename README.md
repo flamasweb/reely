@@ -45,6 +45,7 @@ slider.init();
 |--------|-----------|-------------|
 | init | options | Initializes reely with [options](#options) |
 | slideTo | slideNumber | Slides `slideNumber` |
+| setPause | boolean | pause Reely |
 
 ## Options
 At initialization reely accepts multiple options:
